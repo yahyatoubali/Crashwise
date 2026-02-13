@@ -5,10 +5,8 @@
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from textwrap import dedent
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -23,10 +21,10 @@ app = typer.Typer()
 
 @app.command()
 def project(
-    name: Optional[str] = typer.Option(
+    name: str | None = typer.Option(
         None, "--name", "-n", help="Project name (defaults to current directory name)"
     ),
-    api_url: Optional[str] = typer.Option(
+    api_url: str | None = typer.Option(
         None,
         "--api-url",
         "-u",
@@ -51,13 +49,12 @@ def project(
     crashwise_dir = current_dir / ".crashwise"
 
     # Check if project already exists
-    if crashwise_dir.exists() and not force:
-        if crashwise_dir.is_dir() and any(crashwise_dir.iterdir()):
-            console.print(
-                "❌ Crashwise project already exists in this directory", style="red"
-            )
-            console.print("Use --force to reinitialize", style="dim")
-            raise typer.Exit(1)
+    if crashwise_dir.exists() and not force and crashwise_dir.is_dir() and any(crashwise_dir.iterdir()):
+        console.print(
+            "❌ Crashwise project already exists in this directory", style="red"
+        )
+        console.print("Use --force to reinitialize", style="dim")
+        raise typer.Exit(1)
 
     # Get project name
     if not name:

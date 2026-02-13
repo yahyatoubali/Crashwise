@@ -290,10 +290,11 @@ def reset_config(
     """
     config_type = "global" if global_config else "project"
 
-    if not force:
-        if not Confirm.ask(f"Reset {config_type} configuration to defaults?", default=False, console=console):
-            console.print("❌ Reset cancelled", style="yellow")
-            raise typer.Exit(0)
+    if not force and not Confirm.ask(
+        f"Reset {config_type} configuration to defaults?", default=False, console=console
+    ):
+        console.print("❌ Reset cancelled", style="yellow")
+        raise typer.Exit(0)
 
     try:
         # Create new default configuration
